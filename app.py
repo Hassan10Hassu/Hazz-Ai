@@ -3,79 +3,61 @@ import google.generativeai as genai
 import fal_client
 import os
 
-# 1. 🔑 KEYS (Your Working Keys)
+# 1. 🔑 KEYS (Confirmed Working)
 GEMINI_KEY = "AIzaSyCTrIsSO7JYwHG5pKzbtwZ_jomBnbZhu9M"
 FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
 os.environ["FAL_KEY"] = FAL_KEY
 
-# 🚀 THE SPEED FIX: This function runs ONCE and stays in memory.
+# 🚀 SPEED BOOST: This keeps the app from "re-logging in" every time.
+# We use the EXACT model name you said works properly.
 @st.cache_resource
-def load_brain():
+def get_hazz_brain():
     genai.configure(api_key=GEMINI_KEY)
-    # Using the name you confirmed works:
     return genai.GenerativeModel('gemini-3-flash-preview')
 
-model = load_brain()
+model = get_hazz_brain()
 
-# 🎨 UI SETUP (Your Professional Theme)
-st.set_page_config(page_title="Hazz Ai | Pro", page_icon="⚡", layout="wide")
-st.markdown("""
-    <style>
-    .stApp { background-color: #050505; color: #e0e0e0; }
-    h1 { color: #00f2ff; text-shadow: 0 0 10px #00f2ff55; }
-    .stButton>button { background: linear-gradient(45deg, #00f2ff, #0072ff); color: white; border-radius: 8px; }
-    </style>
-    """, unsafe_allow_html=True)
-
+# 🎨 UI SETUP
+st.set_page_config(page_title="Hazz Ai | Pro Suite", page_icon="⚡", layout="wide")
 st.title("HAZZ AI")
+st.write("Developed by **Hassan Faiz In** | v4.6 Stable")
+
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
-# 1. Chat (Streaming for speed, but using your working model)
+# 1. Chat (USING YOUR WORKING LOGIC)
 with tabs[0]:
     user_msg = st.chat_input("Command Hazz Ai...")
     if user_msg:
         with st.chat_message("user"): st.write(user_msg)
         with st.chat_message("assistant"):
             try:
-                # stream=True makes it feel much faster
-                response = model.generate_content(user_msg, stream=True)
-                def clean_stream(stream):
-                    for chunk in stream:
-                        if chunk.text: yield chunk.text
-                st.write_stream(clean_stream(response))
+                # We use regular generation (no stream) to ensure no '403' errors
+                response = model.generate_content(user_msg)
+                st.write(response.text)
             except Exception as e:
-                # If streaming fails, we do a normal fast response
-                res = model.generate_content(user_msg)
-                st.write(res.text)
+                st.error(f"Connection Error: {e}")
 
-# 2. Visuals (Switching back to your original working model but faster version)
+# 2. Visuals (Same as your v4.0)
 with tabs[1]:
-    p_img = st.text_input("Describe image:")
+    prompt_img = st.text_input("Describe image:")
     if st.button("Generate Image"):
-        with st.spinner("Rendering..."):
+        with st.spinner("Hazz Ai rendering..."):
             try:
-                # 'flux-lightning' is the fast version of 'flux-schnell'
-                res = fal_client.subscribe("fal-ai/flux-lightning", arguments={"prompt": p_img})
+                # Schnell is stable, but Lightning is faster. Let's stick to Schnell for safety.
+                res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": prompt_img})
                 st.image(res['images'][0]['url'])
-            except:
-                # Fallback to your old one if lightning fails
-                res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": p_img})
-                st.image(res['images'][0]['url'])
+            except Exception as e: st.error(f"Visual Error: {e}")
 
-# 3. Video & 4. Audio (Keeping your exact working code)
+# 3. Video & 4. Audio (Your exact original code)
 with tabs[2]:
-    p_vid = st.text_input("Describe video:")
+    prompt_vid = st.text_input("Describe video:")
     if st.button("Generate Video"):
         with st.spinner("Processing..."):
-            res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": p_vid})
+            res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": prompt_vid})
             st.video(res['video']['url'])
 
 with tabs[3]:
-    p_aud = st.text_input("Vibe:")
+    prompt_mus = st.text_input("Vibe:")
     if st.button("Generate Song"):
         with st.spinner("Composing..."):
-            res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": p_aud})
-            st.audio(res['audio']['url'])
-
-st.divider()
-st.caption("Developed by Hassan Faiz In | v4.5 Optimized")
+            res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": prompt_mus})
