@@ -44,20 +44,28 @@ with col2:
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
 # 1. Chat
+# 1. Chat (OPTIMIZED FOR SPEED)
 with tabs[0]:
     user_msg = st.chat_input("Command Hazz Ai...")
     if user_msg:
+        # Display user message immediately
         with st.chat_message("user"):
             st.write(user_msg)
+        
+        # Display assistant response with streaming
         with st.chat_message("assistant"):
             try:
                 # 2026 Stable Model
                 model = genai.GenerativeModel('gemini-3-flash-preview')
-                response = model.generate_content(user_msg)
-                st.write(response.text)
+                
+                # 'stream=True' is the secret for speed!
+                response = model.generate_content(user_msg, stream=True)
+                
+                # This function draws the text word-by-word as it arrives
+                st.write_stream(response)
+                
             except Exception as e:
                 st.error(f"Neural Error: {e}")
-
 # 2. Images
 with tabs[1]:
     prompt_img = st.text_input("Describe image:")
