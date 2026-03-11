@@ -23,7 +23,7 @@ model = load_model()
 # ==========================================
 # 🎨 FUTURISTIC UI/UX SETUP
 # ==========================================
-st.set_page_config(page_title="Hazz Ai | Pro Suite", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="Hazz Ai | Pro Suite", page_icon="https://img.sanishtech.com/u/86b88fbb3abf4ebc53d5e5c1ad3f4b03.png", layout="wide")
 
 st.markdown("""
     <style>
