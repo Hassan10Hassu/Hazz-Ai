@@ -60,7 +60,8 @@ with tabs[0]:
         with st.chat_message("assistant"):
             try:
                 # Using the 2026 stable identifier
-                model = genai.GenerativeModel('gemini-1.5-flash')
+               # Updated for March 2026 stable endpoints
+model = genai.GenerativeModel('gemini-3-flash-preview')
                 response = model.generate_content(user_msg)
                 st.write(response.text)
             except Exception as e:
