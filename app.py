@@ -14,7 +14,7 @@ os.environ["FAL_KEY"] = FAL_KEY
 @st.cache_resource
 def load_model():
     genai.configure(api_key=GEMINI_KEY)
-    return genai.GenerativeModel('gemini-1.5-flash') # Updated to latest stable version
+    return genai.GenerativeModel('gemini-1.5-flash') # ❌ This is retired
 
 model = load_model()
 
