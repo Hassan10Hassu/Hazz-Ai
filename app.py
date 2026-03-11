@@ -10,7 +10,15 @@ GEMINI_KEY = "AIzaSyCTrIsSO7JYwHG5pKzbtwZ_jomBnbZhu9M"
 FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
 
 os.environ["FAL_KEY"] = FAL_KEY
-genai.configure(api_key=GEMINI_KEY)
+
+# --- SPEED FIX START ---
+@st.cache_resource
+def load_model():
+    genai.configure(api_key=GEMINI_KEY)
+    return genai.GenerativeModel('gemini-3-flash-preview')
+
+model = load_model()
+# --- SPEED FIX END ---
 
 # ==========================================
 # 🎨 FUTURISTIC UI/UX SETUP
@@ -38,9 +46,8 @@ with col2:
     st.write("Developed by **Hassan Faiz In** | v4.0 Final")
 
 # ==========================================
-# 🚀 CORE FEATURES (Defining Tabs First!)
+# 🚀 CORE FEATURES
 # ==========================================
-# IMPORTANT: We define 'tabs' HERE so they exist for the code below
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
 # 1. Chat (CLEAN & FAST)
@@ -52,29 +59,26 @@ with tabs[0]:
         
         with st.chat_message("assistant"):
             try:
-                model = genai.GenerativeModel('gemini-3-flash-preview')
-                
-                # We use streaming for speed
+                # We use the 'model' we loaded at the top for maximum speed
                 response = model.generate_content(user_msg, stream=True)
                 
-                # This helper extracts ONLY the text from the technical data
                 def stream_text(response_iterator):
                     for chunk in response_iterator:
-                        # Only yield the text part of the chunk
                         if chunk.text:
                             yield chunk.text
 
-                # Display the cleaned text word-by-word
                 st.write_stream(stream_text(response))
                 
             except Exception as e:
                 st.error(f"Neural Error: {e}")
+
 # 2. Images
 with tabs[1]:
     prompt_img = st.text_input("Describe image:")
     if st.button("Generate Image"):
         with st.spinner("Hazz Ai rendering..."):
             try:
+                # TIP: For 2-second images, you can change 'flux/schnell' to 'flux-lightning'
                 res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": prompt_img})
                 st.image(res['images'][0]['url'])
             except Exception as e:
