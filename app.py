@@ -4,120 +4,85 @@ import fal_client
 import os
 
 # ==========================================
-# 🔑 SECURE KEY LOADING
+# 🔑 THE BRAINS (Hardcoded for Hassan Faiz)
 # ==========================================
-try:
-    GEMINI_API_KEY = st.secrets["AIzaSyC7K1AkCW14bvgl5HPV4lPznnzEN1_qfSQ"]
-    FAL_API_KEY = st.secrets["a2aac75a-4a19-48d3-b173-f157e880cf4f:edca6bcd4136e01c369bbae968458600"]
-    
-    os.environ["a2aac75a-4a19-48d3-b173-f157e880cf4f:edca6bcd4136e01c369bbae968458600"] = FAL_API_KEY
-    genai.configure(api_key=GEMINI_API_KEY)
-except Exception as e:
-    st.error("Credential Error: Please add your API keys to Streamlit Secrets.")
-    st.stop()
+# These are now correctly formatted as strings to prevent NameErrors
+GEMINI_KEY = "AIzaSyC7K1AkCW14bvgl5HPV4lPznnzEN1_qfSQ"
+FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
+
+os.environ["FAL_KEY"] = FAL_KEY
+genai.configure(api_key=GEMINI_KEY)
 
 # ==========================================
-# 🎨 FUTURISTIC UI/UX DESIGN
+# 🎨 FUTURISTIC UI/UX SETUP
 # ==========================================
-st.set_page_config(page_title="Hazz Ai Pro", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="Hazz Ai | Pro Suite", page_icon="⚡", layout="wide")
 
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;600&display=swap');
-    
-    .stApp { background: linear-gradient(135deg, #050505 0%, #0a0a12 100%); color: #e0e0e0; font-family: 'Inter', sans-serif; }
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: #00f2ff; text-shadow: 0 0 10px rgba(0, 242, 255, 0.4); }
-    
-    /* Futuristic Card Style */
-    .css-1r6slb0 { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 15px; padding: 20px; }
-    
-    /* Buttons */
-    .stButton>button { 
-        background: linear-gradient(90deg, #00f2ff 0%, #0072ff 100%); 
-        color: white; border-radius: 8px; border: none; font-weight: bold; 
-        padding: 10px 20px; transition: 0.3s;
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    .stApp { background-color: #050505; color: #e0e0e0; }
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: #00f2ff; text-shadow: 0 0 10px #00f2ff55; }
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
+    .stTabs [data-baseweb="tab"] { 
+        background-color: #111; border-radius: 5px 5px 0 0; padding: 10px 20px; color: #888;
     }
-    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 242, 255, 0.4); }
+    .stTabs [data-baseweb="tab-highlight"] { background-color: #00f2ff; }
+    .stButton>button { 
+        background: linear-gradient(45deg, #00f2ff, #0072ff); 
+        color: white; border: none; width: 100%; font-weight: bold;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# Main Title Section
-st.title("⚡ HAZZ AI")
-st.markdown(f"**Creative Director:** Hassan Faiz | **System Status:** Optimal")
-st.divider()
+# Header
+col1, col2 = st.columns([1, 5])
+with col1:
+    # This displays a placeholder logo; replace with your uploaded logo.png later
+    st.image("https://cdn-icons-png.flaticon.com/512/2103/2103633.png", width=70)
+with col2:
+    st.title("HAZZ AI")
+    st.write("Developed by **Hassan Faiz In** | v2.0 Stable")
 
 # ==========================================
-# 🛰️ MULTIMODAL TABS
+# 🚀 CORE FEATURES
 # ==========================================
-tab_chat, tab_visual, tab_motion, tab_audio = st.tabs([
-    "🧠 NEURAL CHAT", "🖼️ IMAGE ENGINE", "🎬 MOTION GEN", "🎵 SONIC LAB"
-])
+tabs = st.tabs(["💬 Chat", "🖼️ Images", "🎬 Video", "🎵 Music"])
 
-# --- 1. NEURAL CHAT ---
-with tab_chat:
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-    
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-
-    if prompt := st.chat_input("Input command for Hazz Ai..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
+# 1. Chat
+with tabs[0]:
+    user_msg = st.chat_input("Command Hazz Ai...")
+    if user_msg:
+        with st.chat_message("user"): st.write(user_msg)
         with st.chat_message("assistant"):
-            try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                response = model.generate_content(prompt)
-                st.markdown(response.text)
-                st.session_state.messages.append({"role": "assistant", "content": response.text})
-            except Exception as e:
-                st.error("Neural link failed. Check Gemini API credits.")
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(user_msg)
+            st.write(response.text)
 
-# --- 2. IMAGE ENGINE ---
-with tab_visual:
-    st.subheader("Generate Visual Assets")
-    img_p = st.text_area("Art Prompt:", placeholder="E.g. Futuristic cinematic portrait, 8k resolution...")
-    if st.button("INITIATE RENDERING"):
-        with st.spinner("Synthesizing..."):
-            try:
-                res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": img_p})
-                st.image(res['images'][0]['url'], use_container_width=True)
-            except:
-                st.error("Visualization error. Check Fal.ai Key.")
+# 2. Images
+with tabs[1]:
+    prompt_img = st.text_input("Describe the image:")
+    if st.button("Generate Image"):
+        with st.spinner("Hazz Ai is rendering..."):
+            res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": prompt_img})
+            st.image(res['images'][0]['url'])
 
-# --- 3. MOTION GEN ---
-with tab_motion:
-    st.subheader("Cinematic Video Generator")
-    vid_p = st.text_area("Scene Description:", placeholder="E.g. A neon-lit street in 2077, drone shot...")
-    if st.button("START MOTION RENDER"):
-        with st.spinner("Processing temporal frames..."):
-            try:
-                res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": vid_p})
-                st.video(res['video']['url'])
-            except:
-                st.error("Server high load. Try again.")
+# 3. Video
+with tabs[2]:
+    prompt_vid = st.text_input("Describe the video scene:")
+    if st.button("Generate Video"):
+        with st.spinner("Hazz Ai is processing motion..."):
+            res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": prompt_vid})
+            st.video(res['video']['url'])
 
-# --- 4. SONIC LAB ---
-with tab_audio:
-    st.subheader("AI Audio Composition")
-    aud_p = st.text_input("Vibe:", placeholder="E.g. High-energy cinematic trailer music, 140 BPM...")
-    if st.button("COMPOSE AUDIO"):
-        with st.spinner("Orchestrating..."):
-            try:
-                res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": aud_p})
-                st.audio(res['audio']['url'])
-            except:
-                st.error("Audio engine busy.")
+# 4. Music
+with tabs[3]:
+    prompt_mus = st.text_input("Vibe (e.g. Cinematic cinematic trailer music):")
+    if st.button("Generate Song"):
+        with st.spinner("Hazz Ai is composing..."):
+            res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": prompt_mus})
+            st.audio(res['audio']['url'])
 
-# ==========================================
-# 🏷️ FOOTER
-# ==========================================
-st.markdown("---")
-col_l, col_r = st.columns(2)
-with col_l:
-    st.caption("© 2026 Hazz Ai Creative Suite")
-with col_r:
-    st.markdown("<p style='text-align: right; color: #00f2ff;'><b>Hassan Faiz In</b></p>", unsafe_allow_html=True)
+# Footer Tag
+st.divider()
+st.markdown("<p style='text-align: center; color: #00f2ff;'>Made by Hassan Faiz In</p>", unsafe_allow_html=True)
