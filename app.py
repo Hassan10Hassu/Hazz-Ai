@@ -4,20 +4,13 @@ import fal_client
 import os
 
 # ==========================================
-# 🔑 SECURE KEY LOADING (Safe for Public Use)
+# 🔑 THE BRAINS (Hardcoded for Hassan Faiz)
 # ==========================================
-try:
-    # This looks for keys in your Streamlit Settings -> Secrets
-    GEMINI_KEY = st.secrets["GEMINI_API_KEY"]
-    FAL_KEY = st.secrets["FAL_API_KEY"]
-    
-    os.environ["FAL_KEY"] = FAL_KEY
-    genai.configure(api_key=GEMINI_KEY)
-    app_status = "🟢 ONLINE"
-except Exception:
-    app_status = "🔴 OFFLINE (Check Secrets)"
-    st.error("Credential Error: Please add your API keys to Streamlit Secrets.")
-    st.stop()
+GEMINI_KEY = "AIzaSyCTrIsSO7JYwHG5pKzbtwZ_jomBnbZhu9M"
+FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
+
+os.environ["FAL_KEY"] = FAL_KEY
+genai.configure(api_key=GEMINI_KEY)
 
 # ==========================================
 # 🎨 FUTURISTIC UI/UX SETUP
@@ -28,75 +21,75 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
     .stApp { background-color: #050505; color: #e0e0e0; }
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: #00f2ff; text-shadow: 0 0 10px #00f2ff22; }
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: #00f2ff; text-shadow: 0 0 10px #00f2ff55; }
     .stButton>button { 
         background: linear-gradient(45deg, #00f2ff, #0072ff); 
-        color: white; border: none; width: 100%; font-weight: bold; border-radius: 8px; transition: 0.3s;
+        color: white; border: none; width: 100%; font-weight: bold; border-radius: 8px;
     }
-    .stButton>button:hover { transform: scale(1.02); box-shadow: 0 0 15px #00f2ff; }
     </style>
     """, unsafe_allow_html=True)
 
-# Header with Status
-col1, col2 = st.columns([4, 1])
+# Header
+col1, col2 = st.columns([1, 5])
 with col1:
-    st.title("HAZZ AI")
-    st.markdown(f"**Creative Director:** Hassan Faiz In")
+    st.image("https://cdn-icons-png.flaticon.com/512/2103/2103633.png", width=70)
 with col2:
-    st.markdown(f"<p style='text-align: right; color: #00f2ff;'>{app_status}</p>", unsafe_allow_html=True)
-
-st.divider()
+    st.title("HAZZ AI")
+    st.write("Developed by **Hassan Faiz In** | v4.0 Final")
 
 # ==========================================
-# 🛰️ MULTIMODAL TABS
+# 🚀 CORE FEATURES (Defining Tabs First!)
 # ==========================================
+# IMPORTANT: We define 'tabs' HERE so they exist for the code below
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
 # 1. Chat
 with tabs[0]:
     user_msg = st.chat_input("Command Hazz Ai...")
     if user_msg:
-        with st.chat_message("user"): st.write(user_msg)
+        with st.chat_message("user"):
+            st.write(user_msg)
         with st.chat_message("assistant"):
             try:
-                # Using the 2026 stable identifier
-               # Updated for March 2026 stable endpoints
-model = genai.GenerativeModel('gemini-3-flash-preview')
+                # 2026 Stable Model
+                model = genai.GenerativeModel('gemini-3-flash-preview')
                 response = model.generate_content(user_msg)
                 st.write(response.text)
             except Exception as e:
                 st.error(f"Neural Error: {e}")
 
-# 2. Visuals (Image Generation)
+# 2. Images
 with tabs[1]:
-    p_img = st.text_input("Describe the image you want:")
-    if st.button("RENDER IMAGE"):
-        with st.spinner("Processing..."):
+    prompt_img = st.text_input("Describe image:")
+    if st.button("Generate Image"):
+        with st.spinner("Hazz Ai rendering..."):
             try:
-                res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": p_img})
+                res = fal_client.subscribe("fal-ai/flux/schnell", arguments={"prompt": prompt_img})
                 st.image(res['images'][0]['url'])
-            except Exception as e: st.error(f"Error: {e}")
+            except Exception as e:
+                st.error(f"Visual Error: {e}")
 
-# 3. Motion (Video Generation)
+# 3. Video
 with tabs[2]:
-    p_vid = st.text_input("Describe the video scene:")
-    if st.button("GENERATE VIDEO"):
-        with st.spinner("Processing motion..."):
+    prompt_vid = st.text_input("Describe video:")
+    if st.button("Generate Video"):
+        with st.spinner("Hazz Ai processing..."):
             try:
-                res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": p_vid})
+                res = fal_client.subscribe("fal-ai/luma-dream-machine", arguments={"prompt": prompt_vid})
                 st.video(res['video']['url'])
-            except Exception as e: st.error(f"Error: {e}")
+            except Exception as e:
+                st.error(f"Motion Error: {e}")
 
-# 4. Audio (Music Generation)
+# 4. Music
 with tabs[3]:
-    p_aud = st.text_input("Vibe (e.g. Cinematic cinematic trailer):")
-    if st.button("COMPOSE MUSIC"):
-        with st.spinner("Orchestrating..."):
+    prompt_mus = st.text_input("Vibe:")
+    if st.button("Generate Song"):
+        with st.spinner("Hazz Ai composing..."):
             try:
-                res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": p_aud})
+                res = fal_client.subscribe("fal-ai/stable-audio", arguments={"prompt": prompt_mus})
                 st.audio(res['audio']['url'])
-            except Exception as e: st.error(f"Error: {e}")
+            except Exception as e:
+                st.error(f"Audio Error: {e}")
 
-# Footer
 st.divider()
-st.markdown("<p style='text-align: center; color: #888;'>Hazz Ai Pro Suite © 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #00f2ff;'>Created by Hassan Faiz In</p>", unsafe_allow_html=True)
