@@ -7,7 +7,7 @@ import os
 # 🔑 THE BRAINS
 # ==========================================
 GEMINI_KEY = "AIzaSyBmRemickXsJiKLqfn2wnzC_P90TN0w-14"
-FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
+FAL_KEY = "73b854e6-6d67-4df5-8e47-2680a3a8be31:18a11e6d674130f48f721675fedbd98d"
 
 os.environ["FAL_KEY"] = FAL_KEY
 
