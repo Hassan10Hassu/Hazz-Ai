@@ -36,31 +36,40 @@ with col1:
     st.image("https://cdn-icons-png.flaticon.com/512/2103/2103633.png", width=70)
 with col2:
     st.title("HAZZ AI")
-    st.write("Developed by **Hassan Faiz In** | v2.0 Stable")
+    st.write("Developed by **Hassan Faiz In** | v3.0 Ultra")
 
 # ==========================================
 # 🚀 CORE FEATURES
 # ==========================================
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
-# 1. Chat
+# 1. Chat (With Auto-Model Selection)
 with tabs[0]:
     user_msg = st.chat_input("Command Hazz Ai...")
     if user_msg:
         with st.chat_message("user"):
             st.write(user_msg)
         with st.chat_message("assistant"):
-            try:
-                # Use 'gemini-1.5-flash' for maximum compatibility
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                response = model.generate_content(user_msg)
-                st.write(response.text)
-            except Exception as e:
-                st.error(f"Brain Error: {e}")
+            # List of models to try in order of stability
+            models_to_try = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro']
+            success = False
+            
+            for model_name in models_to_try:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(user_msg)
+                    st.write(response.text)
+                    success = True
+                    break # Stop if it works
+                except Exception:
+                    continue # Try next model if this one fails
+            
+            if not success:
+                st.error("Brain Error: All neural pathways are currently busy. Please check your API key status.")
 
 # 2. Images
 with tabs[1]:
-    prompt_img = st.text_input("Describe the image you want:")
+    prompt_img = st.text_input("Describe image (e.g. 4k Cinematic Portrait):")
     if st.button("Generate Image"):
         with st.spinner("Hazz Ai is rendering..."):
             try:
@@ -71,7 +80,7 @@ with tabs[1]:
 
 # 3. Video
 with tabs[2]:
-    prompt_vid = st.text_input("Describe the video scene (e.g., A drone shot of a futuristic city):")
+    prompt_vid = st.text_input("Describe video scene:")
     if st.button("Generate Video"):
         with st.spinner("Hazz Ai is processing motion..."):
             try:
@@ -82,7 +91,7 @@ with tabs[2]:
 
 # 4. Music
 with tabs[3]:
-    prompt_mus = st.text_input("Vibe (e.g., Dark cinematic techno, 120 BPM):")
+    prompt_mus = st.text_input("Vibe (e.g. Dark cinematic trailer):")
     if st.button("Generate Song"):
         with st.spinner("Hazz Ai is composing..."):
             try:
