@@ -1,3 +1,27 @@
+from flask import Flask, render_template, request, jsonify
+import os
+
+app = Flask(__name__)
+
+# This route loads your professional UI
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+# This route handles the AI logic when you click "Send"
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get("prompt", "")
+
+    # PLACEHOLDER: This is where you connect to your AI model
+    # For now, Hazz AI will just repeat what you said
+    ai_response = f"Hazz AI received your message: '{user_message}'. Connection to the brain is active!"
+
+    return jsonify({"reply": ai_response})
+
+if __name__ == '__main__':
+    app.run(debug=True)
 import streamlit as st
 import google.generativeai as genai
 import fal_client
