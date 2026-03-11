@@ -43,26 +43,29 @@ with col2:
 # IMPORTANT: We define 'tabs' HERE so they exist for the code below
 tabs = st.tabs(["💬 Chat", "🖼️ Visuals", "🎬 Motion", "🎵 Audio"])
 
-# 1. Chat
-# 1. Chat (OPTIMIZED FOR SPEED)
+# 1. Chat (CLEAN & FAST)
 with tabs[0]:
     user_msg = st.chat_input("Command Hazz Ai...")
     if user_msg:
-        # Display user message immediately
         with st.chat_message("user"):
             st.write(user_msg)
         
-        # Display assistant response with streaming
         with st.chat_message("assistant"):
             try:
-                # 2026 Stable Model
                 model = genai.GenerativeModel('gemini-3-flash-preview')
                 
-                # 'stream=True' is the secret for speed!
+                # We use streaming for speed
                 response = model.generate_content(user_msg, stream=True)
                 
-                # This function draws the text word-by-word as it arrives
-                st.write_stream(response)
+                # This helper extracts ONLY the text from the technical data
+                def stream_text(response_iterator):
+                    for chunk in response_iterator:
+                        # Only yield the text part of the chunk
+                        if chunk.text:
+                            yield chunk.text
+
+                # Display the cleaned text word-by-word
+                st.write_stream(stream_text(response))
                 
             except Exception as e:
                 st.error(f"Neural Error: {e}")
