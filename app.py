@@ -6,7 +6,7 @@ import os
 # ==========================================
 # 🔑 THE BRAINS (Hardcoded for Hassan Faiz)
 # ==========================================
-GEMINI_KEY = "AIzaSyA5r1VapEiAMDSqyqroazpRMOwNr7g-TOE"
+GEMINI_KEY = "AIzaSyCMfxKqKFqnQt1W2aQOnYeL1A1Qz0bb-rc"
 FAL_KEY = "3fc8d750-df6c-48ff-91da-ff5e4e6a99db:448b685fb163176440ba6edb57490cbe"
 
 os.environ["FAL_KEY"] = FAL_KEY
