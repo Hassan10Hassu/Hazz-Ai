@@ -55,7 +55,7 @@ with tabs[0]:
     if user_msg:
         with st.chat_message("user"): st.write(user_msg)
         with st.chat_message("assistant"):
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-3-flash')
             response = model.generate_content(user_msg)
             st.write(response.text)
 
