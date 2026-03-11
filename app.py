@@ -10,11 +10,11 @@ os.environ["FAL_KEY"] = FAL_KEY
 
 # 🚀 SPEED BOOST 1: Cache the Model Connection
 @st.cache_resource
-def load_ai_model():
+def get_model():
     genai.configure(api_key=GEMINI_KEY)
     return genai.GenerativeModel('gemini-3-flash-preview')
 
-model = load_ai_model()
+model = get_model() # This is now instant after the first run
 
 # 🎨 UI Setup
 st.set_page_config(page_title="Hazz Ai | Pro Suite", page_icon="⚡", layout="wide")
